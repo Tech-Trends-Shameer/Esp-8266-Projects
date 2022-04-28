@@ -28,8 +28,8 @@ void sendSensor(){
   }
 
   Serial.println(t);
-  Blynk.virtualWrite(V5, h);
-  Blynk.virtualWrite(V6, t);
+  Blynk.virtualWrite(V6, h);
+  Blynk.virtualWrite(V5, t);
     Serial.print("Temperature : ");
     Serial.print(t);
     Serial.print("    Humidity : ");
