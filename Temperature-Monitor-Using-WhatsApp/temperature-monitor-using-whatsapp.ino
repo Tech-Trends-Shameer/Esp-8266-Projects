@@ -5,7 +5,7 @@
 #include <ThingESP.h>
 #include <DHT.h>
 
-#define DHTPIN 5 
+#define DHTPIN 2 
 #define DHTTYPE DHT11     // DHT 11
 DHT dht(DHTPIN, DHTTYPE);
 
