@@ -27,7 +27,7 @@ void sendSensor(){
 
 
   if(data > 20){
-    Blynk.email("test@gmail.com", "Alert", "Gas Leakage Detected!");
+    //Blynk.email("test@gmail.com", "Alert", "Gas Leakage Detected!");
     Blynk.logEvent("gas_alert","Gas Leakage Detected");
   }
 }
