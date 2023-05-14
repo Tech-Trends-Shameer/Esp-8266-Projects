@@ -17,7 +17,7 @@ char pass[] = "Wifi Password";  // type your wifi password
 BlynkTimer timer;
 
 
-#define DHTPIN 4 //Connect Out pin to D2 in NODE MCU
+#define DHTPIN 2 //Connect Out pin to D4 in NODE MCU
 #define DHTTYPE DHT11  
 DHT dht(DHTPIN, DHTTYPE);
 
