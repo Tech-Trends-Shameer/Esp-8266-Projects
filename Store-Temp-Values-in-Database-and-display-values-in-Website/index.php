@@ -53,7 +53,7 @@ $db;
   <div class="row">
   <div class="col-md-12 text-center">
     <h1>Real Time Weather Station</h1>
-    <p>Created By: <a href="#">AhmadLogs</a></p>
+    <p>Created By: <a href="#">Tech Trends Shameer</a></p>
   </div>
   <div class="clearfix"></div>
   
