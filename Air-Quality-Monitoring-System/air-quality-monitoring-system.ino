@@ -35,7 +35,7 @@ BlynkTimer timer;
 int gas = A0;
 int sensorThreshold = 100;
 
-#define DHTPIN 2 //Connect Out pin to D2 in NODE MCU
+#define DHTPIN 2 //Connect Out pin to D4 in NODE MCU
 #define DHTTYPE DHT11  
 DHT dht(DHTPIN, DHTTYPE);
 
