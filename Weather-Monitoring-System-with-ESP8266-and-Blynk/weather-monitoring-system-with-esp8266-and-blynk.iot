@@ -1,0 +1,156 @@
+//Tech Trends Shameer
+//Weather Monitoring System
+
+#define BLYNK_TEMPLATE_ID "TMPL3W6pAV-Ui"
+#define BLYNK_TEMPLATE_NAME "Weather Monitoring System"
+#define BLYNK_AUTH_TOKEN "TcpKdfrYWj8ptgeddfiWNV_gSXdU0w9dhfLIhUdK3Y"
+
+#define BLYNK_PRINT Serial
+
+
+#include <LiquidCrystal_I2C.h>
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#include <DHT.h>
+#include <SPI.h>
+#include <Adafruit_BMP280.h>
+
+//Initialize the LCD display
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+
+#define BMP_SCK  (13)
+#define BMP_MISO (12)
+#define BMP_MOSI (11)
+#define BMP_CS   (10)
+
+// Create an object for the BMP280 sensor
+Adafruit_BMP280 bmp; // I2C
+
+char auth[] = BLYNK_AUTH_TOKEN;//Enter your Auth token
+char ssid[] = "WiFi Username";//Enter your WIFI name
+char pass[] = "WiFi Password";//Enter your WIFI password
+
+DHT dht(D3, DHT11);//(DHT sensor pin,sensor type)
+BlynkTimer timer;
+
+//Define Rain and LDR pins
+#define rain A0
+#define light D0
+
+//Create three variables for pressure
+double T, P;
+char status;
+
+void setup() {
+  Serial.begin(9600);
+  bmp.begin();
+  lcd.begin();
+  lcd.backlight();
+  pinMode(light, INPUT);
+
+  Blynk.begin(auth, ssid, pass);
+  dht.begin();
+
+  lcd.setCursor(3,0);
+  lcd.print("Tech Trends1  ");
+  lcd.setCursor(0,0);
+  delay(2000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Weather Monitor");
+  lcd.setCursor(4, 1);
+  lcd.print("System");
+  delay(4000);
+  lcd.clear();
+
+  //Call the functions
+  timer.setInterval(100L, LDRsensor);
+  timer.setInterval(100L, DHT11sensor);
+  timer.setInterval(100L, RainSensor);
+  timer.setInterval(100L, BMP280Sensor);
+  
+}
+
+//Get the DHT11 sensor values
+void DHT11sensor() {  
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Failed to read from DHT11 sensor!");
+    return;
+  }
+  Blynk.virtualWrite(V0, temperature);
+  Blynk.virtualWrite(V1, humidity);
+
+  lcd.setCursor(0, 0);
+  lcd.print("T:");
+  lcd.print(temperature);
+
+  lcd.setCursor(8, 0);
+  lcd.print("H:");
+  lcd.print(humidity);
+
+}
+
+//Get the pressure values
+void BMP280Sensor() {
+  //status =  bmp.startTemperature();
+  float temp = bmp.readTemperature();
+  float pressure = bmp.readPressure();
+  float alt = bmp.readAltitude(1013.25);
+
+    if (!bmp.begin(0x76)) {
+    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+    while (1);
+  }
+
+  /* Default settings from datasheet. */
+  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
+                  Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
+                  Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
+                  Adafruit_BMP280::FILTER_X16,      /* Filtering. */
+                  Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+
+  Serial.print(F("Pressure = "));
+  Serial.print(pressure); /* Adjusted to local forecast! */
+  Serial.println(" p");
+
+  Blynk.virtualWrite(V2, pressure);
+  lcd.setCursor(0, 1);
+  lcd.print("P:");
+  lcd.print(pressure);
+}
+
+//Get the rain sensor values
+void RainSensor() {
+  int rainvalue = analogRead(rain);
+  int value = map(rainvalue, 400, 1023, 100, 0);
+  Blynk.virtualWrite(V3, value);
+
+  lcd.setCursor(11, 1);
+  lcd.print("R:");
+  lcd.print(value);
+  lcd.print(" ");
+}
+
+//Get the LDR sensor values
+void LDRsensor() {
+  bool value = digitalRead(light);
+  if (value == 0) {
+    WidgetLED LED(V4);
+    LED.on();
+    Serial.print("LED ON");
+  } else {
+    WidgetLED LED(V4);
+    LED.off();
+    Serial.print("LED OFF");
+  }
+
+}
+
+void loop() {
+  Blynk.run();//Run the Blynk library
+  timer.run();//Run the Blynk timer
+}
