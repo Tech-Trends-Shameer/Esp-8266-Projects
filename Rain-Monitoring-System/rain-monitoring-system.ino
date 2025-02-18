@@ -9,7 +9,7 @@ LiquidCrystal_I2C lcd(0x3F, 16, 2);
 //DHT dht(D3, DHT11); //(sensor pin,sensor type)
 BlynkTimer timer;
 
-char auth[] = "6j3HIe7DjjdDn5ZlswykMZZiHTOgO0JCj"; //Enter the Auth code which was send by Blink
+char auth[] = "Auth Code"; //Enter the Auth code which was send by Blink
 char ssid[] = "Wifi Username";  //Enter your WIFI Name
 char pass[] = "Wifi Password";  //Enter your WIFI Password
 
